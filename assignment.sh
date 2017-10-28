@@ -13,9 +13,16 @@ reset=$(tput sgr0)
 echo "________________________________________"
 echo "Checking php, mysql & httpd packages are installed or not: "
 echo "________________________________________"
-echo "Setting up repo for mysql-server"
+echo "Checking/Setting up repo for mysql-server"
+if [ -e /etc/yum.repos.d/mysql-community.repo ];
+then
+echo "$green Repo for mysql-server has already been configured, proceeding... $reset"
+else
 wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
-rpm -ivh mysql-community-release-el7-5.noarch.rpm 
+rpm -ivh mysql-community-release-el7-5.noarch.rpm
+echo "________________________________________"
+echo "Repo for Mysql-server has been configured"
+fi
 echo "________________________________________"
 rpm -qa | egrep 'php|mysql-server|httpd' -i
 if [ $? -eq 0 ]; then
