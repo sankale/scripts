@@ -13,7 +13,11 @@ reset=$(tput sgr0)
 echo "________________________________________"
 echo "Checking php, mysql & httpd packages are installed or not: "
 echo "________________________________________"
-rpm -qa | egrep 'php|mysql|httpd' -i
+echo "Setting up repo for mysql-server"
+wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+rpm -ivh mysql-community-release-el7-5.noarch.rpm 
+echo "________________________________________"
+rpm -qa | egrep 'php|mysql-server|httpd' -i
 if [ $? -eq 0 ]; then
 echo "________________________________________"
 	echo "$green Packages are already installed, no further installation needed, proceeding... $reset"
