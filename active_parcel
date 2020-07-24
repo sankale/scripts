@@ -1,0 +1,43 @@
+import time
+import datetime
+import sys
+from cm_api.api_client import ApiResource, ApiException, API_CURRENT_VERSION
+from cm_api.http_client import HttpClient, RestException
+from cm_api.endpoints.hosts import *
+from cm_api.endpoints.services import ApiServiceSetupInfo, ApiService
+
+cm_host = "localhost"
+user = "admin"
+passwd = "skale"
+api = ApiResource(cm_host, username=user, password=passwd)
+
+# Get a list of all clusters
+for cluster in api.get_all_clusters():
+  print cluster.name
+for services in cluster.get_all_services():
+  print services
+
+wxm_version = "WXM"
+wxm_version_number = "2.1.0.2.1.0-b804-3162213"
+parcels_list = []
+for parcel in cluster.get_all_parcels():
+    if parcel.version.startswith(wxm_version_number) and parcel.product == "WXM":
+        parcels_list.append(parcel)
+for parcel in parcels_list:
+
+    print "WILL INSTALL " + parcel.product + ' ' + parcel.version
+
+# CREATE THE LIST OF PARCELS TO BE INSTALLED (WXM)
+parcel.start_distribution()
+while True:
+  parcel = cluster.get_parcel('WXM', wxm_version_number)
+  if parcel.stage == 'DISTRIBUTED':
+    break
+  if parcel.state.errors:
+    raise Exception(str(parcel.state.errors))
+  print "progress: %s / %s" % (parcel.state.progress, parcel.state.totalProgress)
+  time.sleep(15) # check again in 15 seconds
+print "distributed WXM parcel version %s on cluster %s" % (wxm_version_number, cluster.name)
+parcel.activate()
+c.stop().wait()
+c.start().wait()
