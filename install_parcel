@@ -1,0 +1,15 @@
+yum install wget -y
+
+
+if [ `ls -al /opt/cloudera/parcel-repo/ | grep WXM | wc -l` -lt 2 ]
+then
+  wget http://172.26.96.184:80/WXM-2.1.0.2.1.0-b804-3162213-el7.parcel -O /opt/cloudera/parcel-repo/WXM-2.1.0.2.1.0-b804-3162213-el7.parcel
+  wget http://172.26.96.184:80/WXM-2.1.0.2.1.0-b804-3162213-el7.parcel.sha -O /opt/cloudera/parcel-repo/WXM-2.1.0.2.1.0-b804-3162213-el7.parcel.sha
+  wget http://172.26.96.184:80/WXM-2.1.0.2.1.0-b804-3162213.jar -O /opt/cloudera/csd/WXM-2.1.0.2.1.0-b804-3162213.jar
+  wget http://172.26.96.184:80/WXM-2.1.0.2.1.0-b804-3162213.jar.sha -O /opt/cloudera/csd/WXM-2.1.0.2.1.0-b804-3162213.jar.sha
+	chown cloudera-scm:cloudera-scm /opt/cloudera/csd /opt/cloudera/parcel-repo -R
+
+	systemctl restart cloudera-scm-server
+	sleep 120
+
+fi
